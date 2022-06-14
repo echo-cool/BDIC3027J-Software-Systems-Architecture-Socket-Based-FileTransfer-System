@@ -100,8 +100,8 @@ public class SegmentedData {
     }
 
     public Boolean isFinished() {
-        System.out.println("Total segments: " + totalSegments);
-        System.out.println("Messages size: " + messages.size());
+//        System.out.println("Total segments: " + totalSegments);
+//        System.out.println("Messages size: " + messages.size());
         return messages.size() == totalSegments;
     }
 

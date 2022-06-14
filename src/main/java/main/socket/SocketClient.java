@@ -20,7 +20,7 @@ public class SocketClient {
         }
     }
 
-    public void println(String message) {
+    public void sendMessage(String message) {
         PrintWriter writer;
         try {
             writer = new PrintWriter(new OutputStreamWriter(

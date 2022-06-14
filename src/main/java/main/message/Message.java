@@ -85,7 +85,7 @@ public abstract class Message implements Transmittable{
 
     public void send(SocketClient socketClient) {
         while (true) {
-            socketClient.println(this.message);
+            socketClient.sendMessage(this.message);
             int timeout = 0;
             while (timeout < MAX_TIMEOUT) {
                 if(socketClient.hasNextLine()){

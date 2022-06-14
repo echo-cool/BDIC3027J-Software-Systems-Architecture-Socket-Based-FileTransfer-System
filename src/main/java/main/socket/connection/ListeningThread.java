@@ -30,30 +30,38 @@ public class ListeningThread extends Thread {
                 break;
             }
 
-            // Remove not running connection threads.
-            for (ConnectionThread connectionThread : connectionThreads) {
-                if (!connectionThread.isRunning()) {
-                    notRunningConnectionThreads.addElement(connectionThread);
-                }
-            }
-            for (ConnectionThread connectionThread : notRunningConnectionThreads) {
-                connectionThreads.remove(connectionThread);
-            }
-            notRunningConnectionThreads.clear();
-            
-            try {
-                Socket socket;
-                socket = serverSocket.accept();
-                ConnectionThread connectionThread = new ConnectionThread(socket, socketServer);
-                connectionThreads.addElement(connectionThread);
-                connectionThread.start();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            removeClosedConnection();
+
+            acceptConnection();
         }
     }
-    
+
+    private void removeClosedConnection() {
+        // Remove not running connection threads.
+        for (ConnectionThread connectionThread : connectionThreads) {
+            if (!connectionThread.isRunning()) {
+                notRunningConnectionThreads.addElement(connectionThread);
+            }
+        }
+        for (ConnectionThread connectionThread : notRunningConnectionThreads) {
+            connectionThreads.remove(connectionThread);
+        }
+        notRunningConnectionThreads.clear();
+    }
+
+    private void acceptConnection() {
+        try {
+            Socket socket;
+            socket = serverSocket.accept();
+            ConnectionThread connectionThread = new ConnectionThread(socket, socketServer);
+            connectionThreads.addElement(connectionThread);
+            connectionThread.start();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public void stopRunning() {
         for (int i = 0; i < connectionThreads.size(); i++)
             connectionThreads.elementAt(i).stopRunning();

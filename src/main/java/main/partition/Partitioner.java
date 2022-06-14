@@ -1,7 +1,7 @@
 package main.partition;
 
 public class Partitioner {
-    public static final int partitionSize = (int) (1024 * 5);
+    public static final int partitionSize = (int) (1024 * 5)/1024;
     int partitionCount = 0;
 
     public static SegmentedData partition(String data, int taskID, int FileID){

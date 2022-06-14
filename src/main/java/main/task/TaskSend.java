@@ -15,6 +15,8 @@ public class TaskSend {
     private int numberOfFiles = 0;
     private ArrayList<File> files = new ArrayList<>();
     private Boolean isPaused = false;
+    private Boolean isStarted = false;
+    private Boolean isFinished = false;
     private HashMap<Integer, Integer> totalSegment = new HashMap<>();
 
     private HashMap<Integer, Integer> progress = new HashMap<>();
@@ -26,7 +28,19 @@ public class TaskSend {
 
     }
 
+    public TaskSend(int taskID) {
+        this.TaskID = taskID;
+        this.numberOfFiles = 0;
+
+    }
+
+    public void addFile(File file) {
+        this.files.add(file);
+        this.numberOfFiles++;
+    }
+
     public void start(SocketClient socketClient) {
+        isStarted = true;
         for (int i = 0; i < numberOfFiles; i++) {
             MessageSYN _messageSYN = new MessageSYN(TaskID, i, files.get(i).getName(), FilePartitioner.getSegmentCount(files.get(i)));
             _messageSYN.send(socketClient);
@@ -54,6 +68,7 @@ public class TaskSend {
                 }
             });
         }
+        this.isFinished = true;
     }
 
     public int getTaskID() {
@@ -78,5 +93,63 @@ public class TaskSend {
 
     public HashMap<Integer, Integer> getTotalSegment() {
         return totalSegment;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TaskSend{" +
+                "TaskID=" + TaskID +
+                ", numberOfFiles=" + numberOfFiles +
+                '}');
+        if (this.isStarted){
+            sb.append("\t");
+            sb.append("[Task Started]");
+            if (this.isPaused){
+                sb.append("\t");
+                sb.append("[Paused]");
+            }
+            else {
+                sb.append("\t");
+                if (this.isFinished){
+                    sb.append("[Finished]");
+                }
+                else {
+                    sb.append("[Running (Sending)]");
+                }
+            }
+        }
+        else{
+            sb.append("\t");
+            sb.append("[Not started]");
+        }
+        sb.append("\n");
+        for(int i = 0; i < files.size(); i ++){
+            File file = files.get(i);
+            if(isStarted) {
+                Integer progress = getProgress().get(i);
+                Integer totalSegment = getTotalSegment().get(i);
+                sb.append("\tFile{" +
+                        "name=" + file.getName() +
+                        ", totalSegment=" + totalSegment +
+                        ", progress=" + progress +
+                        "}");
+            }
+            else{
+                sb.append("\tFile{" +
+                        "name=" + file.getName() +
+                        "}");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    public Boolean getStarted() {
+        return isStarted;
+    }
+
+    public void setPaused(Boolean paused) {
+        isPaused = paused;
     }
 }

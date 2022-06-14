@@ -11,17 +11,17 @@ import main.task.TaskReceive;
 import java.util.HashMap;
 
 public class FileHandler implements IMessageHandler {
-    private HashMap<Integer, TaskReceive> taskHashMap = new HashMap<>();
+    public static HashMap<Integer, TaskReceive> taskHashMap = new HashMap<>();
     @Override
     public void onReceive(Connection connection, String message) {
 //        System.out.println(message);
         if(Message.getMessageType(message) == Message.Type.SYN) {
             MessageSYN synMessage = new MessageSYN(message);
-            System.out.println("SYN message received");
-            System.out.println("SYN message: " + synMessage);
+//            System.out.println("SYN message received");
+//            System.out.println("SYN message: " + synMessage);
             synchronized (taskHashMap) {
                 if (taskHashMap.containsKey(Integer.parseInt(synMessage.getTaskID()))) {
-                    System.out.println("Task already exists, adding to taskHashMap");
+//                    System.out.println("Task already exists, adding to taskHashMap");
                     taskHashMap.get(Integer.parseInt(synMessage.getTaskID())).addFile(new SegmentedData(
                             Integer.parseInt(synMessage.getTaskID()),
                             Integer.parseInt(synMessage.getFileID()),
@@ -30,7 +30,7 @@ public class FileHandler implements IMessageHandler {
                     ));
 
                 } else {
-                    System.out.println("Task does not exist, creating new task");
+//                    System.out.println("Task does not exist, creating new task");
                     TaskReceive taskReceive = new TaskReceive(Integer.parseInt(synMessage.getTaskID()));
                     taskReceive.addFile(new SegmentedData(
                             Integer.parseInt(synMessage.getTaskID()),
@@ -45,7 +45,7 @@ public class FileHandler implements IMessageHandler {
             connection.println(ackMessage.getMessage());
 
         }else if (Message.getMessageType(message) == Message.Type.DATA) {
-            System.out.println("DATA message received");
+//            System.out.println("DATA message received");
             MessageDATA dataMessage = new MessageDATA(message);
             int taskID = Integer.parseInt(dataMessage.getTaskID());
             int fileID = Integer.parseInt(dataMessage.getFileID());
