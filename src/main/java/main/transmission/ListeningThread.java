@@ -1,8 +1,8 @@
-package main.socket.connection;
-
-import main.socket.SocketServer;
+package main.transmission;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
@@ -67,4 +67,24 @@ public class ListeningThread extends Thread {
             connectionThreads.elementAt(i).stopRunning();
         isRunning = false;
     }
-} 
+
+    public static class Connection {
+        private Socket socket;
+
+        public Connection(Socket socket) {
+            this.socket = socket;
+        }
+
+        public void println(String message) {
+            PrintWriter writer;
+            try {
+                writer = new PrintWriter(new OutputStreamWriter(
+                                         socket.getOutputStream()), true);
+                writer.println(message);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+}

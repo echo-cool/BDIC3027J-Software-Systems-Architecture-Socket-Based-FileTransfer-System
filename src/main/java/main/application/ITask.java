@@ -1,4 +1,4 @@
-package main.task;
+package main.application;
 
 public interface ITask {
     void start();

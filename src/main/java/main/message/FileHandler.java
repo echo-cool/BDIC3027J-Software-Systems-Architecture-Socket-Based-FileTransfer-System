@@ -1,19 +1,16 @@
-package main.socket.handlers;
+package main.message;
 
-import main.message.MessageACK;
-import main.message.MessageDATA;
-import main.message.Message;
-import main.message.MessageSYN;
-import main.partition.SegmentedData;
-import main.socket.connection.Connection;
-import main.task.TaskReceive;
+import main.transmission.IMessageHandler;
+import main.file.AbstractPartitioner;
+import main.transmission.TaskReceive;
+import main.transmission.ListeningThread;
 
 import java.util.HashMap;
 
 public class FileHandler implements IMessageHandler {
     public static HashMap<Integer, TaskReceive> taskHashMap = new HashMap<>();
     @Override
-    public void onReceive(Connection connection, String message) {
+    public void onReceive(ListeningThread.Connection connection, String message) {
 //        System.out.println(message);
         if(Message.getMessageType(message) == Message.Type.SYN) {
             MessageSYN synMessage = new MessageSYN(message);
@@ -22,7 +19,7 @@ public class FileHandler implements IMessageHandler {
             synchronized (taskHashMap) {
                 if (taskHashMap.containsKey(Integer.parseInt(synMessage.getTaskID()))) {
 //                    System.out.println("Task already exists, adding to taskHashMap");
-                    taskHashMap.get(Integer.parseInt(synMessage.getTaskID())).addFile(new SegmentedData(
+                    taskHashMap.get(Integer.parseInt(synMessage.getTaskID())).addFile(new AbstractPartitioner.SegmentedData(
                             Integer.parseInt(synMessage.getTaskID()),
                             Integer.parseInt(synMessage.getFileID()),
                             synMessage.getFileName(),
@@ -32,7 +29,7 @@ public class FileHandler implements IMessageHandler {
                 } else {
 //                    System.out.println("Task does not exist, creating new task");
                     TaskReceive taskReceive = new TaskReceive(Integer.parseInt(synMessage.getTaskID()));
-                    taskReceive.addFile(new SegmentedData(
+                    taskReceive.addFile(new AbstractPartitioner.SegmentedData(
                             Integer.parseInt(synMessage.getTaskID()),
                             Integer.parseInt(synMessage.getFileID()),
                             synMessage.getFileName(),
@@ -41,7 +38,7 @@ public class FileHandler implements IMessageHandler {
                     taskHashMap.put(Integer.parseInt(synMessage.getTaskID()), taskReceive);
                 }
             }
-            MessageACK ackMessage = synMessage.getACK_Message();
+            MessageACK ackMessage = synMessage.receive();
             connection.println(ackMessage.getMessage());
 
         }else if (Message.getMessageType(message) == Message.Type.DATA) {
@@ -54,7 +51,7 @@ public class FileHandler implements IMessageHandler {
             if (taskHashMap.containsKey(taskID)) {
                 TaskReceive taskReceive = taskHashMap.get(taskID);
                 taskReceive.updateSegmentedData(fileID, segmentID, data);
-                MessageACK ackMessage = dataMessage.getACK_Message();
+                MessageACK ackMessage = dataMessage.receive();
                 taskReceive.sendACK(ackMessage, connection);
 
 //                SegmentedData segmentedData = receiveTask.getSegmentedData(fileID);

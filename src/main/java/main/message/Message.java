@@ -1,11 +1,14 @@
 package main.message;
 
-import main.socket.SocketClient;
+import main.transmission.Receivable;
+import main.transmission.Sendable;
+import main.transmission.SocketClient;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Message implements Transmittable{
+public abstract class Message implements Receivable, Sendable {
 //    public static final String DATA_FLAG = "DATA";
 //    public static final String ACK_FLAG = "ACK";
 //    public static final String SYN_FLAG = "SYN";
@@ -79,7 +82,7 @@ public abstract class Message implements Transmittable{
 
     public abstract Type getFlagType();
 
-    public MessageACK getACK_Message() {
+    public MessageACK receive() {
         return new MessageACK(getMessage());
     }
 
@@ -122,4 +125,13 @@ public abstract class Message implements Transmittable{
 //        System.out.println(this.message);
     }
 
+    public static class MessageUtil {
+        public static String base64Encode(String data) {
+            return Base64.getEncoder().encodeToString(data.getBytes());
+        }
+
+        public static String base64Decode(String data) {
+            return new String(Base64.getDecoder().decode(data));
+        }
+    }
 }

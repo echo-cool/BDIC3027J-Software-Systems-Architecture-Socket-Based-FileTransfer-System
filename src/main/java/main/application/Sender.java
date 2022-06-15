@@ -1,8 +1,8 @@
-package main;
+package main.application;
 
-import main.partition.Partitioner;
-import main.socket.SocketClient;
-import main.task.TaskSend;
+import main.file.AbstractPartitioner;
+import main.transmission.SocketClient;
+import main.transmission.TaskSend;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -83,7 +83,7 @@ public class Sender {
                     }
                     long current = System.currentTimeMillis();
 //                    System.out.println(current - prev_time);
-                    System.out.println("Speed: " + String.format("%.2f",((((double)total_sent) - prev_sent)/((current - prev_time)/1000.0))/(1024.0/Partitioner.partitionSize)) + " KB/s");
+                    System.out.println("Speed: " + String.format("%.2f",((((double)total_sent) - prev_sent)/((current - prev_time)/1000.0))/(1024.0/ AbstractPartitioner.partitionSize)) + " KB/s");
                     prev_time = current;
                     prev_sent = total_sent;
 

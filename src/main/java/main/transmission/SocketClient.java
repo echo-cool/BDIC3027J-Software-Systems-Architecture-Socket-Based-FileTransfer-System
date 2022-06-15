@@ -1,4 +1,4 @@
-package main.socket;
+package main.transmission;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,5 +84,10 @@ public class SocketClient {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    public static class MessageFlag {
+        public static final String pureMessage = "0";
+        public static final String connectionClosed = "1";
     }
 }

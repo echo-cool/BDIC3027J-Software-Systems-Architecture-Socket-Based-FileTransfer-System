@@ -1,11 +1,11 @@
-package main.partition;
+package main.file;
 
 import main.message.MessageDATA;
 
 import java.io.*;
 import java.util.Base64;
 
-public class FilePartitioner extends Partitioner {
+public class FilePartitioner extends AbstractPartitioner {
     public static int getSegmentCount(File file){
         int total_size = (int) file.length();
         int partitionCount = (int) Math.ceil(((double) total_size) / partitionSize);

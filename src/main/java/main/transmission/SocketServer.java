@@ -1,7 +1,4 @@
-package main.socket;
-
-import main.socket.connection.ListeningThread;
-import main.socket.handlers.IMessageHandler;
+package main.transmission;
 
 import java.io.IOException;
 import java.net.ServerSocket;

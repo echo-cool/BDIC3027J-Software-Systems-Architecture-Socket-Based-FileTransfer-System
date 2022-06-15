@@ -1,14 +1,10 @@
-package main;
+package main.application;
 
-import main.socket.SocketClient;
-import main.socket.SocketServer;
-import main.socket.handlers.FileHandler;
-import main.task.TaskReceive;
-import main.task.TaskSend;
+import main.transmission.SocketServer;
+import main.message.FileHandler;
+import main.transmission.TaskReceive;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Receiver {

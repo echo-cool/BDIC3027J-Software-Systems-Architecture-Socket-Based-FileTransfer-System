@@ -1,10 +1,9 @@
-package main.task;
+package main.transmission;
 
 import main.message.MessageDATA;
 import main.message.MessageSYN;
-import main.partition.FilePartitioner;
-import main.partition.PartitionListener;
-import main.socket.SocketClient;
+import main.file.AbstractPartitioner;
+import main.file.FilePartitioner;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class TaskSend {
         }
         for (int i = 0; i < numberOfFiles; i++) {
             int finalI = i;
-            FilePartitioner.partition(files.get(i), TaskID, i, new PartitionListener() {
+            FilePartitioner.partition(files.get(i), TaskID, i, new AbstractPartitioner.PartitionListener() {
                 @Override
                 public void onPartitionBlock(MessageDATA message) {
                     while (isPaused) {

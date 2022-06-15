@@ -1,33 +1,31 @@
-package main.task;
+package main.transmission;
 
-import main.Receiver;
+import main.file.AbstractPartitioner;
+import main.application.Receiver;
 import main.message.MessageACK;
-import main.partition.SegmentedData;
-import main.socket.connection.Connection;
 
-import java.io.File;
 import java.util.HashMap;
 
 public class TaskReceive {
     private int taskID;
-    private HashMap<Integer, SegmentedData> files = new HashMap<>();
+    private HashMap<Integer, AbstractPartitioner.SegmentedData> files = new HashMap<>();
     private boolean isPaused = false;
 
     public TaskReceive(int taskID) {
         this.taskID = taskID;
     }
 
-    public void addFile(SegmentedData file) {
+    public void addFile(AbstractPartitioner.SegmentedData file) {
         files.put(file.getFileID(), file);
     }
 
-    public SegmentedData getSegmentedData(int fileID) {
+    public AbstractPartitioner.SegmentedData getSegmentedData(int fileID) {
         return files.get(fileID);
     }
 
     public void updateSegmentedData(int fileID, int segmentID, String data) {
 //        System.out.println("Updating segment " + segmentID + " of file " + fileID);
-        SegmentedData segmentedData = files.get(fileID);
+        AbstractPartitioner.SegmentedData segmentedData = files.get(fileID);
         segmentedData.addMessage(segmentID, data);
         if (segmentedData.isFinished()) {
 //            System.out.println("File received, saving...");
@@ -36,7 +34,7 @@ public class TaskReceive {
 
     }
 
-    public HashMap<Integer, SegmentedData> getFiles() {
+    public HashMap<Integer, AbstractPartitioner.SegmentedData> getFiles() {
         return files;
     }
 
@@ -44,7 +42,7 @@ public class TaskReceive {
         return taskID;
     }
 
-    public void sendACK(MessageACK ackMessage, Connection connection) {
+    public void sendACK(MessageACK ackMessage, ListeningThread.Connection connection) {
         while (isPaused) {
             try {
                 Thread.sleep(1);
@@ -74,7 +72,7 @@ public class TaskReceive {
             }
         sb.append("\n");
         for(int i = 0; i < files.size(); i ++){
-            SegmentedData file = files.get(i);
+            AbstractPartitioner.SegmentedData file = files.get(i);
                 Integer progress = file.getMessages().size();
                 Integer totalSegment = file.getTotalSegments();
                 sb.append("\tFile{" +

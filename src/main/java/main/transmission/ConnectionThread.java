@@ -1,7 +1,4 @@
-package main.socket.connection;
-
-import main.socket.MessageFlag;
-import main.socket.SocketServer;
+package main.transmission;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,13 +8,13 @@ import java.net.Socket;
 public class ConnectionThread extends Thread {
     private Socket socket;
     private SocketServer socketServer;
-    private Connection connection;
+    private ListeningThread.Connection connection;
     private boolean isRunning;
 
     public ConnectionThread(Socket socket, SocketServer socketServer) {
         this.socket = socket;
         this.socketServer = socketServer;
-        connection = new Connection(socket);
+        connection = new ListeningThread.Connection(socket);
         isRunning = true;
     }
 
@@ -40,13 +37,13 @@ public class ConnectionThread extends Thread {
 
                 // Check the message flag.
                 switch (messageFlag) {
-                case MessageFlag.pureMessage:
+                case SocketClient.MessageFlag.pureMessage:
                     // Handle the message.
                     if (message != null) {
                         socketServer.getMessageHandler().onReceive(connection, message);
                     }
                     break;
-                case MessageFlag.connectionClosed:
+                case SocketClient.MessageFlag.connectionClosed:
                     stopRunning();
                     break;
                 default:
