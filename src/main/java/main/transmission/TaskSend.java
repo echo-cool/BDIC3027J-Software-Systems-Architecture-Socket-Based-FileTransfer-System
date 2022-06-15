@@ -59,11 +59,6 @@ public class TaskSend {
                     }
                     message.send(socketClient);
                     progress.put(Integer.parseInt(message.getFileID()), message.getSegmentIndex() + 1);
-//                    try {
-//                        Thread.sleep(10);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
                 }
             });
         }

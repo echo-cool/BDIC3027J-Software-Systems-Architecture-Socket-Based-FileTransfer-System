@@ -1,24 +1,42 @@
 package main.file;
 
 import main.message.MessageDATA;
+import main.transmission.IPartitioner;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Base64;
 
-public class AbstractPartitioner {
+public abstract class AbstractPartitioner implements IPartitioner {
     public static final int partitionSize = (int) (1024 * 5)/1024;
     int partitionCount = 0;
 
-    public static SegmentedData partition(String data, int taskID, int FileID){
-        int partitionCount = (int) Math.ceil(((double) data.length()) / partitionSize);
+    public static SegmentedData partition(File file, int taskID, int FileID, PartitionListener listener){
+        int total_size = 0;
+        total_size = (int) file.length();
+        int partitionCount = (int) Math.ceil(((double) total_size) / partitionSize);
         SegmentedData segmentedData = new SegmentedData(taskID, FileID, partitionCount);
-        for(int i = 0; i < partitionCount; i++){
-            segmentedData.addMessage(
-                    i,
-                    data.substring(i * partitionSize, Math.min((i + 1) * partitionSize, data.length()))
-            );
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            for(int i = 0; i < partitionCount; i++){
+                byte[] buffer = new byte[partitionSize];
+                int read = bis.read(buffer);
+                String base64 = Base64.getEncoder().encodeToString(buffer);
+//                String data = new String(buffer, 0, read);
+                listener.onPartitionBlock(
+                        new MessageDATA(
+                                taskID,
+                                FileID,
+                                i,
+                                base64
+                        ));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
 
         return segmentedData;
     }
