@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class Sender {
     private ArrayList<TaskSend> taskSends;
     private Scanner sc;
+    private InetAddress targetIP;
 
     public Sender() {
         this.taskSends = new ArrayList<>();
@@ -117,6 +118,20 @@ public class Sender {
 
     public void inputManager(){
         sc = new Scanner(System.in);
+        System.out.println("Welcome to the Sender Console");
+        System.out.print("Please enter the IP address of the target machine (Default: localhost):\n>>>");
+        String ip = sc.nextLine();
+        try {
+            if (ip.equals("")){
+                System.out.println("Using default IP address: " + InetAddress.getLocalHost().getHostAddress());
+                ip = InetAddress.getLocalHost().getHostAddress();
+            }
+            targetIP = InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            System.out.println("Invalid IP address");
+            System.exit(0);
+        }
+        System.out.println("OK\nSending files to " + targetIP.getHostAddress());
         displayTasks();
         showPrompt();
         while (sc.hasNextLine()) {
@@ -162,13 +177,9 @@ public class Sender {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    SocketClient socketClient = new SocketClient(InetAddress.getLocalHost(), Config.SERVER_PORT);
-                                    t.start(socketClient);
-                                    socketClient.close();
-                                } catch (UnknownHostException e) {
-                                    e.printStackTrace();
-                                }
+                                SocketClient socketClient = new SocketClient(targetIP, Config.SERVER_PORT);
+                                t.start(socketClient);
+                                socketClient.close();
                             }
                         }).start();
                     }
@@ -221,13 +232,9 @@ public class Sender {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    SocketClient socketClient = new SocketClient(InetAddress.getLocalHost(), Config.SERVER_PORT);
-                    t1.start(socketClient);
-                    socketClient.close();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
+                SocketClient socketClient = new SocketClient(targetIP, Config.SERVER_PORT);
+                t1.start(socketClient);
+                socketClient.close();
             }
         }).start();
     }
