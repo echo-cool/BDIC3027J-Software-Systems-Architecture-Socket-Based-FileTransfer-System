@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 public abstract class AbstractPartitioner implements IPartitioner {
-    public static final int partitionSize = (int) (1024 * 5);
+    public static final int partitionSize = (int) (1024 * 5)/1024;
     int partitionCount = 0;
 
     public static SegmentedData partition(File file, int taskID, int FileID, PartitionListener listener){

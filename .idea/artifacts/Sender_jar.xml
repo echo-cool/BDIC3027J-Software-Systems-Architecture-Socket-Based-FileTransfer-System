@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Sender:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Sender_jar</output-path>
+    <root id="archive" name="Socket_FileTransfer.jar">
+      <element id="module-output" name="Socket_FileTransfer" />
+    </root>
+  </artifact>
+</component>
