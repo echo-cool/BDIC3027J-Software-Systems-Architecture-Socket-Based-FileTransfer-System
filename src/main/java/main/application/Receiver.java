@@ -65,6 +65,7 @@ public class Receiver {
 
     public void inputManager(){
         sc = new Scanner(System.in);
+        System.out.println("Welcome to the Receiver Console");
         displayTasks();
         showPrompt();
         while (sc.hasNextLine()) {
