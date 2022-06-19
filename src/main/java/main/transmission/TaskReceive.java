@@ -1,12 +1,16 @@
 package main.transmission;
 
+import main.application.ITask;
 import main.file.AbstractPartitioner;
 import main.application.Receiver;
+import main.file.FilePartitioner;
 import main.message.MessageACK;
+import main.message.MessageDATA;
+import main.message.MessageSYN;
 
 import java.util.HashMap;
 
-public class TaskReceive {
+public class TaskReceive implements ITask {
     private int taskID;
     private HashMap<Integer, AbstractPartitioner.SegmentedData> files = new HashMap<>();
     private boolean isPaused = false;
@@ -53,7 +57,24 @@ public class TaskReceive {
         connection.println(ackMessage.getMessage());
     }
 
-    public void setPaused(boolean paused) {
+    public void pause(Boolean paused) {
+        isPaused = paused;
+    }
+
+    @Override
+    public HashMap<Integer, Integer> getProgress() {
+        return null;
+    }
+
+    @Override
+    public void start(SocketClient socketClient) {
+        for (int i = 0; i < getFiles().size(); i++) {
+            MessageSYN _messageSYN = new MessageSYN(files.get(i).getTaskID(), i, files.get(i).getFileName(), files.get(i).getTotalSegments());
+            _messageSYN.send(socketClient);
+        }
+    }
+
+    public void resume(Boolean paused) {
         isPaused = paused;
     }
 
@@ -85,4 +106,7 @@ public class TaskReceive {
         return sb.toString();
     }
 
+    public Boolean isPaused() {
+        return isPaused;
+    }
 }

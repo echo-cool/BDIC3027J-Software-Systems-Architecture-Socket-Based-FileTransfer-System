@@ -1,5 +1,6 @@
 package main.transmission;
 
+import main.application.ITask;
 import main.message.MessageDATA;
 import main.message.MessageSYN;
 import main.file.AbstractPartitioner;
@@ -9,7 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TaskSend {
+public class TaskSend implements ITask {
     private int TaskID;
     private int numberOfFiles = 0;
     private ArrayList<File> files = new ArrayList<>();
@@ -77,7 +78,7 @@ public class TaskSend {
         return files;
     }
 
-    public Boolean getPaused() {
+    public Boolean isPaused() {
         return isPaused;
     }
 
@@ -143,7 +144,13 @@ public class TaskSend {
         return isStarted;
     }
 
-    public void setPaused(Boolean paused) {
+    public void pause(Boolean paused) {
         isPaused = paused;
     }
+
+    public void resume(Boolean paused) {
+        isPaused = paused;
+    }
+
+
 }

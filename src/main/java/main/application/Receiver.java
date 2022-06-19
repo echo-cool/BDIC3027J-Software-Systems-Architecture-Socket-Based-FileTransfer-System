@@ -95,7 +95,7 @@ public class Receiver {
                     }
                     TaskReceive task = FileHandler.taskHashMap.get(taskID);
                     if(task != null){
-                        task.setPaused(true);
+                        task.pause(true);
                     }
                     System.out.println("Task " + taskID + " paused");
 
@@ -114,7 +114,7 @@ public class Receiver {
                     }
                     TaskReceive taskReceive = FileHandler.taskHashMap.get(taskID);
                     if(taskReceive != null){
-                        taskReceive.setPaused(false);
+                        taskReceive.pause(false);
                     }
                     System.out.println("Task " + taskID + " resumed");
                     break;

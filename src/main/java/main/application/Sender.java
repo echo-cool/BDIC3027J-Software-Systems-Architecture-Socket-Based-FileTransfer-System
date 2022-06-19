@@ -134,67 +134,26 @@ public class Sender {
                     break;
                 case "add":
                     //Add file to task
-                    System.out.println("You are adding a file to a task.");
-                    System.out.print("Enter task ID (default: 0): ");
-                    int taskID = sc.nextInt();
-                    if(taskID > taskSends.size() || taskID < 0){
-                        System.out.println("Invalid task ID");
-                        System.out.println("Task " + taskID + " does not exist");
-                        System.out.println("Using default task 0");
-                        taskID = 0;
-                    }
-                    sc.nextLine();
-                    System.out.print("Enter file path (default: src/main/resources/test.jpg): ");
-                    String filePath = sc.nextLine();
-                    if (filePath.equals("")) {
-                        filePath = "src/main/resources/test.jpg";
-                    }
-                    File file = new File(filePath);
-                    if(file.exists()){
-                        taskSends.get(taskID).addFile(file);
-                        System.out.println("File added to task " + taskID);
-                    }
-                    else{
-                        System.out.println("File does not exist");
-                    }
+                    addFilesToTask();
                     displayTasks();
                     break;
                 case "q":
                     //Query task
                     displayTasks();
-                    for (TaskSend t : taskSends) {
-                        for(int i = 0; i < t.getProgress().size(); i++){
-                            int total = t.getTotalSegment().get(i);
-                            int sent = t.getProgress().get(i);
-                            System.out.print("Task-" + t.getTaskID() + " FileID-" + i + ": " + String.format("%.2f",(((double)sent)/total)*100) +"%  "+ sent + "/" + total);
-                            System.out.println();
-                        }
-                    }
+                    queryTask();
                     break;
                 case "start":
                     //Start task
                     System.out.println("Which task do you want to start: ");
                     displayTasks();
                     System.out.print("Enter task ID: ");
-                    taskID = sc.nextInt();
+                    int taskID = sc.nextInt();
                     if(taskID > taskSends.size() || taskID < 0){
                         System.out.println("Invalid task ID");
                         System.out.println("Task " + taskID + " does not exist");
                         break;
                     }
-                    TaskSend t1 = taskSends.get(taskID);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                SocketClient socketClient = new SocketClient(InetAddress.getLocalHost(), Config.SERVER_PORT);
-                                t1.start(socketClient);
-                                socketClient.close();
-                            } catch (UnknownHostException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
+                    startTask(taskID);
                     System.out.println("Task " + taskID + " started");
                     break;
                 case "startall":
@@ -225,8 +184,7 @@ public class Sender {
                         System.out.println("Task " + taskID + " does not exist");
                         break;
                     }
-                    taskSends.get(taskID).setPaused(true);
-                    System.out.println("Task " + taskID + " paused");
+                    pauseTask(taskID);
                     break;
 
                 case "resume":
@@ -240,12 +198,74 @@ public class Sender {
                         System.out.println("Task " + taskID + " does not exist");
                         break;
                     }
-                    taskSends.get(taskID).setPaused(false);
-                    System.out.println("Task " + taskID + " resumed");
+                    resumeTask(taskID);
                     break;
 
             }
             showPrompt();
+        }
+    }
+
+    private void resumeTask(int taskID) {
+        taskSends.get(taskID).pause(false);
+        System.out.println("Task " + taskID + " resumed");
+    }
+
+    private void pauseTask(int taskID) {
+        taskSends.get(taskID).pause(true);
+        System.out.println("Task " + taskID + " paused");
+    }
+
+    private void startTask(int taskID) {
+        TaskSend t1 = taskSends.get(taskID);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    SocketClient socketClient = new SocketClient(InetAddress.getLocalHost(), Config.SERVER_PORT);
+                    t1.start(socketClient);
+                    socketClient.close();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void queryTask() {
+        for (TaskSend t : taskSends) {
+            for(int i = 0; i < t.getProgress().size(); i++){
+                int total = t.getTotalSegment().get(i);
+                int sent = t.getProgress().get(i);
+                System.out.print("Task-" + t.getTaskID() + " FileID-" + i + ": " + String.format("%.2f",(((double)sent)/total)*100) +"%  "+ sent + "/" + total);
+                System.out.println();
+            }
+        }
+    }
+
+    private void addFilesToTask() {
+        System.out.println("You are adding a file to a task.");
+        System.out.print("Enter task ID (default: 0): ");
+        int taskID = sc.nextInt();
+        if(taskID > taskSends.size() || taskID < 0){
+            System.out.println("Invalid task ID");
+            System.out.println("Task " + taskID + " does not exist");
+            System.out.println("Using default task 0");
+            taskID = 0;
+        }
+        sc.nextLine();
+        System.out.print("Enter file path (default: src/main/resources/test.jpg): ");
+        String filePath = sc.nextLine();
+        if (filePath.equals("")) {
+            filePath = "src/main/resources/test.jpg";
+        }
+        File file = new File(filePath);
+        if(file.exists()){
+            taskSends.get(taskID).addFile(file);
+            System.out.println("File added to task " + taskID);
+        }
+        else{
+            System.out.println("File does not exist");
         }
     }
 
