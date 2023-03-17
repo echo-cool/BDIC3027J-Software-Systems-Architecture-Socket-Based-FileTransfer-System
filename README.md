@@ -1,11 +1,5 @@
 # Socket Based File Transmission System
 
-## Personal Information
-
-* Name: Wang Yuyang
-* BJUT Student ID: 19372316
-* UCD  Student ID: 19206226
-
 ## Comprehensive Project Report 
 
 The comprehensive report is in `File Transmission System Design.pdf`, that report has covered all the content of this project.
