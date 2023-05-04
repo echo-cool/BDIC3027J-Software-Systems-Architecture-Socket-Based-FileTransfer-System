@@ -32,14 +32,12 @@ jobs:
     - name: Build with Maven
       run: ./mvnw -B package -DskipTests --file pom.xml
 
-#     - name: Release
-#       uses: "marvinpinto/action-automatic-releases@latest"
-#       with:
-#         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-#         automatic_release_tag: "app-latest"
-#         prerelease: false
-#         title: Latest Compiled APP
-#         files: |
-#           target/COMP3013J-1.0-SNAPSHOT-jar-with-dependencies.jar 
-#           target/COMP3013J-1.0-SNAPSHOT.jar
-#           target/original-COMP3013J-1.0-SNAPSHOT.jar
+    - name: Release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "app-latest"
+        prerelease: false
+        title: Latest Compiled APP
+        files: |
+          target/Socket_FileTransfer-1.0-SNAPSHOT.jar
