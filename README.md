@@ -1,5 +1,7 @@
 # Socket Based File Transmission System
 
+[![Java CI with Maven](https://github.com/echo-cool/BDIC3027J-Software-Systems-Architecture-Socket-Based-FileTransfer-System/actions/workflows/maven.yml/badge.svg)](https://github.com/echo-cool/BDIC3027J-Software-Systems-Architecture-Socket-Based-FileTransfer-System/actions/workflows/maven.yml)
+
 ## Comprehensive Project Report 
 
 The comprehensive report is in `File Transmission System Design.pdf`, that report has covered all the content of this project.
